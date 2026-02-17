@@ -11,7 +11,7 @@
 </head>
 <body>
 
-  <!-- ── Header ──────────────────────────────────────────────────────── -->
+  <!-- ═══════════════════════════════════════════════════════════ HEADER -->
   <header class="header">
     <div class="header-inner">
       <a href="#" class="logo">
@@ -22,16 +22,19 @@
         </div>
       </a>
       <div class="header-actions">
+        <button class="add-book-btn" id="addBookBtn" aria-label="Add new book">
+          <span>＋</span> <span>Add Book</span>
+        </button>
         <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
       </div>
     </div>
   </header>
 
-  <!-- ── Hero / Search ────────────────────────────────────────────────── -->
+  <!-- ═══════════════════════════════════════════════════════════ HERO -->
   <section class="hero">
     <div class="hero-content">
       <h2>Find Your Next Great Read</h2>
-      <p>Search through our collection of books by title, author, or genre</p>
+      <p>Search through our collection by title, author, or genre</p>
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
         <input
@@ -46,7 +49,7 @@
     </div>
   </section>
 
-  <!-- ── Filters Bar ───────────────────────────────────────────────────── -->
+  <!-- ═══════════════════════════════════════════════════════════ FILTERS -->
   <div class="filters-bar">
     <div class="filters-inner">
       <div class="filter-group">
@@ -84,7 +87,7 @@
     </div>
   </div>
 
-  <!-- ── Main Content ──────────────────────────────────────────────────── -->
+  <!-- ═══════════════════════════════════════════════════════════ MAIN -->
   <main class="main">
     <div class="books-grid" id="booksGrid"></div>
 
@@ -95,15 +98,18 @@
     </div>
   </main>
 
-  <!-- ── Book Detail Modal ─────────────────────────────────────────────── -->
+  <!-- ═══════════════════════════════════════════════ BOOK DETAIL MODAL -->
   <div class="modal-overlay hidden" id="bookModal" tabindex="-1"
-       onclick="if(event.target===this) closeModal()" role="dialog"
-       aria-modal="true" aria-labelledby="modalTitle">
+       onclick="if(event.target===this) closeModal()"
+       role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal">
       <div class="modal-header">
         <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
       </div>
-      <div class="modal-cover" id="modalCover"></div>
+
+      <!-- Cover: real image or gradient fallback -->
+      <div id="modalCover"></div>
+
       <div class="modal-body">
         <p class="modal-genre"  id="modalGenre"></p>
         <h2 class="modal-title" id="modalTitle"></h2>
@@ -120,4 +126,129 @@
             <span class="detail-label">Rating</span>
             <span class="detail-value" id="modalRating"></span>
           </div>
-          <div class="detail-item" style="grid-column: 1/-1">
+          <div class="detail-item" style="grid-column:1/-1">
+            <span class="detail-label">ISBN</span>
+            <span class="detail-value" id="modalISBN"></span>
+          </div>
+        </div>
+        <button class="borrow-btn" id="borrowBtn">Borrow Book</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ ADD BOOK MODAL -->
+  <div class="add-modal-overlay hidden" id="addBookModal" tabindex="-1"
+       onclick="if(event.target===this) closeAddModal()"
+       role="dialog" aria-modal="true" aria-label="Add new book">
+    <div class="add-modal">
+      <div class="add-modal-header">
+        <h2>➕ Add New Book</h2>
+        <button class="modal-close" onclick="closeAddModal()" aria-label="Close">✕</button>
+      </div>
+
+      <div class="add-modal-body">
+
+        <!-- Live cover preview -->
+        <div class="cover-preview-box">
+          <img id="coverPreviewImg" class="hidden" alt="Cover preview" />
+          <div class="cover-preview-text" id="coverPreviewText">
+            <span class="icon">🖼️</span>
+            <span>Cover auto-fetched from Open Library<br/>Enter title or ISBN to preview</span>
+          </div>
+        </div>
+
+        <form id="addBookForm" novalidate>
+          <!-- Hidden field for Open Library cover ID -->
+          <input type="hidden" id="formCoverId" />
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="formTitle">Book Title *</label>
+              <input type="text" id="formTitle" placeholder="e.g. The Great Gatsby" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="formAuthor">Author *</label>
+              <input type="text" id="formAuthor" placeholder="e.g. F. Scott Fitzgerald" required />
+            </div>
+          </div>
+
+          <div class="form-row cols-2">
+            <div class="form-field">
+              <label for="formGenre">Genre *</label>
+              <input type="text" id="formGenre" placeholder="e.g. Classic Fiction" list="genreList" required />
+              <datalist id="genreList">
+                <option value="Classic Fiction">
+                <option value="Dystopian Fiction">
+                <option value="Fantasy">
+                <option value="Science Fiction">
+                <option value="Romance">
+                <option value="Literary Fiction">
+                <option value="Non-Fiction">
+                <option value="Memoir">
+                <option value="Thriller">
+                <option value="Mystery">
+                <option value="Horror">
+                <option value="Historical Fiction">
+                <option value="Philosophical Fiction">
+                <option value="Psychological Fiction">
+                <option value="Post-Apocalyptic">
+              </datalist>
+            </div>
+            <div class="form-field">
+              <label for="formYear">Year *</label>
+              <input type="number" id="formYear" placeholder="e.g. 1997" min="1000" max="2099" required />
+            </div>
+          </div>
+
+          <div class="form-row cols-2">
+            <div class="form-field">
+              <label for="formISBN">ISBN</label>
+              <input type="text" id="formISBN" placeholder="e.g. 9780439708180" />
+              <span class="form-hint">Used to fetch cover image</span>
+            </div>
+            <div class="form-field">
+              <label for="formRating">Rating (0–5)</label>
+              <input type="number" id="formRating" placeholder="e.g. 4.5" min="0" max="5" step="0.1" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="formAvailable">Availability</label>
+              <select id="formAvailable">
+                <option value="true">✓ Available</option>
+                <option value="false">✗ Checked Out</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="formDescription">Description</label>
+              <textarea id="formDescription" placeholder="Brief description of the book…"></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+            <button type="submit" class="btn-submit" id="addBookSubmitBtn">Add to Library</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ TOAST -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════ SCRIPTS -->
+  <script src="js/data.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

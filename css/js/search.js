@@ -7,20 +7,13 @@ let currentSort = 'title';
 let searchTimeout = null;
 
 function initSearch() {
-  const searchInput = document.getElementById('searchInput');
-  const genreFilter = document.getElementById('genreFilter');
+  const searchInput        = document.getElementById('searchInput');
+  const genreFilter        = document.getElementById('genreFilter');
   const availabilityFilter = document.getElementById('availabilityFilter');
-  const sortSelect = document.getElementById('sortSelect');
-  const clearBtn = document.getElementById('clearSearch');
+  const sortSelect         = document.getElementById('sortSelect');
+  const clearBtn           = document.getElementById('clearSearch');
 
-  // Populate genre filter dynamically
-  const genres = [...new Set(books.map(b => b.genre))].sort();
-  genres.forEach(genre => {
-    const option = document.createElement('option');
-    option.value = genre;
-    option.textContent = genre;
-    genreFilter.appendChild(option);
-  });
+  populateGenreFilter();
 
   // Live search with debounce
   searchInput.addEventListener('input', (e) => {
@@ -30,9 +23,7 @@ function initSearch() {
   });
 
   searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      clearSearch();
-    }
+    if (e.key === 'Escape') clearSearch();
   });
 
   genreFilter.addEventListener('change', (e) => {
@@ -52,8 +43,21 @@ function initSearch() {
 
   clearBtn.addEventListener('click', clearSearch);
 
-  // Initial render
   performSearch();
+}
+
+function populateGenreFilter() {
+  const genreFilter = document.getElementById('genreFilter');
+  // Clear existing options except the first "All Genres"
+  while (genreFilter.options.length > 1) genreFilter.remove(1);
+
+  const genres = [...new Set(getAllBooks().map(b => b.genre))].sort();
+  genres.forEach(genre => {
+    const option = document.createElement('option');
+    option.value = genre;
+    option.textContent = genre;
+    genreFilter.appendChild(option);
+  });
 }
 
 function debounceSearch() {
@@ -76,9 +80,10 @@ function highlightText(text, query) {
 }
 
 function performSearch() {
-  const query = currentQuery.toLowerCase();
+  const allBooks = getAllBooks();
+  const query    = currentQuery.toLowerCase();
 
-  let results = books.filter(book => {
+  let results = allBooks.filter(book => {
     const matchesQuery =
       !query ||
       book.title.toLowerCase().includes(query) ||
@@ -91,7 +96,7 @@ function performSearch() {
 
     const matchesAvailability =
       currentAvailability === 'all' ||
-      (currentAvailability === 'available' && book.available) ||
+      (currentAvailability === 'available'   && book.available) ||
       (currentAvailability === 'unavailable' && !book.available);
 
     return matchesQuery && matchesGenre && matchesAvailability;
@@ -110,7 +115,7 @@ function performSearch() {
   });
 
   renderBooks(results, currentQuery);
-  updateStats(results.length, books.length);
+  updateStats(results.length, allBooks.length);
 }
 
 function updateStats(shown, total) {
