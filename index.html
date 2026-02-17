@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibraryMS — Book Management System</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="js/assets/favicon.svg" />
+</head>
+<body>
+
+  <!-- ── Header ──────────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">📚</div>
+        <div class="logo-text">
+          <h1>LibraryMS</h1>
+          <span>Management System</span>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Hero / Search ────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Find Your Next Great Read</h2>
+      <p>Search through our collection of books by title, author, or genre</p>
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Search by title, author, or genre…"
+          autocomplete="off"
+          aria-label="Search books"
+        />
+        <button class="clear-btn" id="clearSearch" aria-label="Clear search">✕</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Filters Bar ───────────────────────────────────────────────────── -->
+  <div class="filters-bar">
+    <div class="filters-inner">
+      <div class="filter-group">
+        <label class="filter-label" for="genreFilter">Genre</label>
+        <select id="genreFilter" class="filter-select" aria-label="Filter by genre">
+          <option value="all">All Genres</option>
+        </select>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="availabilityFilter">Status</label>
+        <select id="availabilityFilter" class="filter-select" aria-label="Filter by availability">
+          <option value="all">All Books</option>
+          <option value="available">Available</option>
+          <option value="unavailable">Checked Out</option>
+        </select>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="filter-group">
+        <label class="filter-label" for="sortSelect">Sort</label>
+        <select id="sortSelect" class="filter-select" aria-label="Sort books">
+          <option value="title">Title A–Z</option>
+          <option value="author">Author A–Z</option>
+          <option value="rating">Highest Rated</option>
+          <option value="year-desc">Newest First</option>
+          <option value="year-asc">Oldest First</option>
+        </select>
+      </div>
+
+      <span class="results-stats" id="resultsStats"></span>
+    </div>
+  </div>
+
+  <!-- ── Main Content ──────────────────────────────────────────────────── -->
+  <main class="main">
+    <div class="books-grid" id="booksGrid"></div>
+
+    <div class="empty-state hidden" id="emptyState">
+      <div class="empty-icon">📭</div>
+      <h3>No books found</h3>
+      <p>Try adjusting your search or clearing the filters to see all books.</p>
+    </div>
+  </main>
+
+  <!-- ── Book Detail Modal ─────────────────────────────────────────────── -->
+  <div class="modal-overlay hidden" id="bookModal" tabindex="-1"
+       onclick="if(event.target===this) closeModal()" role="dialog"
+       aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-cover" id="modalCover"></div>
+      <div class="modal-body">
+        <p class="modal-genre"  id="modalGenre"></p>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <p class="modal-author" id="modalAuthor"></p>
+        <div class="modal-stars" id="modalStars"></div>
+        <span class="modal-status" id="modalStatus"></span>
+        <p class="modal-description" id="modalDescription"></p>
+        <div class="modal-details">
+          <div class="detail-item">
+            <span class="detail-label">Published</span>
+            <span class="detail-value" id="modalYear"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Rating</span>
+            <span class="detail-value" id="modalRating"></span>
+          </div>
+          <div class="detail-item" style="grid-column: 1/-1">
